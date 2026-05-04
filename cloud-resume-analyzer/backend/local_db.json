@@ -1,0 +1,101 @@
+[
+  {
+    "analysisId": "3f6ce577-2f92-4bc4-8c36-85065cbc2223",
+    "userId": "u1",
+    "resumeName": "good.txt",
+    "selectedRole": "Frontend Developer",
+    "score": 76,
+    "totalKeywords": 17,
+    "foundKeywords": [
+      "html",
+      "css",
+      "javascript",
+      "react",
+      "redux",
+      "tailwind",
+      "responsive",
+      "git",
+      "typescript",
+      "rest api",
+      "jest",
+      "accessibility",
+      "figma"
+    ],
+    "missingKeywords": [
+      "webpack",
+      "vue",
+      "angular",
+      "sass"
+    ],
+    "suggestions": [
+      "Gain hands-on experience with \"webpack\" and add it to your resume.",
+      "Gain hands-on experience with \"vue\" and add it to your resume.",
+      "Gain hands-on experience with \"angular\" and add it to your resume.",
+      "Gain hands-on experience with \"sass\" and add it to your resume."
+    ],
+    "tips": [
+      "Add more role-relevant keywords naturally in your experience section.",
+      "Use a single-column layout for better ATS parsing.",
+      "Replace generic phrases with specific technical accomplishments."
+    ],
+    "roleMatchPercent": 76,
+    "fileKey": "u1/good-resume.txt",
+    "createdAt": "2026-04-28T16:44:28.162Z"
+  },
+  {
+    "analysisId": "095620ab-1c70-4cab-9ca9-3553b43d2867",
+    "userId": "u1",
+    "resumeName": "cv.txt",
+    "selectedRole": "Frontend Developer",
+    "score": 0,
+    "totalKeywords": 17,
+    "foundKeywords": [],
+    "missingKeywords": [
+      "html",
+      "css",
+      "javascript",
+      "react",
+      "redux",
+      "tailwind",
+      "responsive",
+      "git",
+      "webpack",
+      "typescript",
+      "vue",
+      "angular",
+      "sass",
+      "rest api",
+      "jest",
+      "accessibility",
+      "figma"
+    ],
+    "suggestions": [
+      "Ensure your resume explicitly mentions HTML5.",
+      "Mention CSS, Flexbox/Grid skills.",
+      "Highlight JavaScript experience with concrete projects.",
+      "Add frontend projects built with React.js.",
+      "Gain hands-on experience with \"redux\" and add it to your resume.",
+      "Add Tailwind CSS to a frontend project.",
+      "Gain hands-on experience with \"responsive\" and add it to your resume.",
+      "Include version control experience with Git/GitHub.",
+      "Gain hands-on experience with \"webpack\" and add it to your resume.",
+      "Refactor a project to TypeScript and mention it.",
+      "Gain hands-on experience with \"vue\" and add it to your resume.",
+      "Gain hands-on experience with \"angular\" and add it to your resume.",
+      "Gain hands-on experience with \"sass\" and add it to your resume.",
+      "Describe REST API design or integration experience.",
+      "Gain hands-on experience with \"jest\" and add it to your resume.",
+      "Gain hands-on experience with \"accessibility\" and add it to your resume.",
+      "Gain hands-on experience with \"figma\" and add it to your resume."
+    ],
+    "tips": [
+      "Your resume needs significant keyword optimisation for this role.",
+      "Add a dedicated Skills section listing the missing keywords.",
+      "Build 1-2 projects showcasing the missing technologies.",
+      "Use action verbs: Built, Developed, Designed, Optimised, Deployed."
+    ],
+    "roleMatchPercent": 0,
+    "fileKey": "test/resume.txt",
+    "createdAt": "2026-04-28T16:41:48.143Z"
+  }
+]

@@ -1,0 +1,5 @@
+﻿John Doe | Software Engineer
+Skills: React, JavaScript, HTML, CSS, TypeScript, Node.js, Git, REST API, Docker, SQL, PostgreSQL
+Experience: 3 years building React applications with Redux and Tailwind CSS.
+Education: B.Tech Computer Science
+Projects: E-commerce app using React and Express. REST API with Node.js and MongoDB.

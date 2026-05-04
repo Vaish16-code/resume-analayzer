@@ -1,0 +1,1 @@
+Skills: React JavaScript HTML CSS TypeScript Node.js Git REST API Docker SQL PostgreSQL Redux Tailwind
