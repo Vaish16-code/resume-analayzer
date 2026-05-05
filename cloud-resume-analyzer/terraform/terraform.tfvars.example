@@ -1,0 +1,8 @@
+aws_profile          = "cloud-ats-dev"
+aws_region           = "ap-south-1"
+resume_bucket_name   = "cloud-ats-resumes-ap-south-1-2026"
+frontend_bucket_name = "cloud-ats-frontend-ap-south-1-2026"
+dynamodb_table_name  = "resume_analysis"
+lambda_timeout       = 30
+lambda_memory_size   = 256
+log_retention_days   = 14

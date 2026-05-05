@@ -1,0 +1,10 @@
+.terraform/
+*.tfstate
+*.tfstate.*
+*.zip
+terraform.tfvars
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+lambda_bundle.zip

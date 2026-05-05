@@ -49,6 +49,7 @@ exports.handler = async (event) => {
         resumeName:   plain.resume_name,
         selectedRole: plain.selected_role,
         createdAt:    plain.created_at,
+        extractedEmail: plain.extracted_email || null,
         foundKeywords:   JSON.parse(plain.found_keywords   || "[]"),
         missingKeywords: JSON.parse(plain.missing_keywords || "[]"),
       };

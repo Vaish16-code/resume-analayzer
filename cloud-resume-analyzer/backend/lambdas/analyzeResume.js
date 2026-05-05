@@ -16,6 +16,14 @@
 const { S3Client, GetObjectCommand }        = require("@aws-sdk/client-s3");
 const { DynamoDBClient, PutItemCommand }    = require("@aws-sdk/client-dynamodb");
 const { v4: uuidv4 }                        = require("uuid");
+const {
+  extractEmail,
+  extractTextFromBuffer,
+  generalTips,
+  matchKeywords,
+  normalise,
+  streamToBuffer,
+} = require("./shared");
 
 const s3     = new S3Client({ region: process.env.AWS_REGION || "us-east-1" });
 const dynamo = new DynamoDBClient({ region: process.env.AWS_REGION || "us-east-1" });
@@ -105,45 +113,6 @@ const CORS = {
   "Access-Control-Allow-Methods": "GET,POST,PUT,DELETE,OPTIONS",
 };
 
-async function streamToString(stream) {
-  const chunks = [];
-  for await (const chunk of stream) chunks.push(Buffer.from(chunk));
-  return Buffer.concat(chunks).toString("utf-8");
-}
-
-function normalise(text) {
-  return text.toLowerCase().replace(/[^\w\s.+#]/g, " ").replace(/\s+/g, " ").trim();
-}
-
-function matchKeywords(text, keywords) {
-  const found = [], missing = [];
-  for (const kw of keywords) {
-    const esc   = kw.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-    const regex = new RegExp(`(^|[\\s,;:()])${esc}([\\s,;:()]|$)`, "i");
-    if (regex.test(text)) found.push(kw); else missing.push(kw);
-  }
-  return { found, missing };
-}
-
-function generalTips(score) {
-  if (score >= 80) return [
-    "Great ATS compatibility! Tailor the resume further for each job posting.",
-    "Keep bullet points results-oriented (quantify achievements).",
-    "Ensure consistent formatting and no spelling errors.",
-  ];
-  if (score >= 50) return [
-    "Add more role-relevant keywords naturally in your experience section.",
-    "Use a single-column layout for better ATS parsing.",
-    "Replace generic phrases with specific technical accomplishments.",
-  ];
-  return [
-    "Your resume needs significant keyword optimisation for this role.",
-    "Add a dedicated Skills section listing the missing keywords.",
-    "Build 1-2 projects showcasing the missing technologies.",
-    "Use action verbs: Built, Developed, Designed, Optimised, Deployed.",
-  ];
-}
-
 // ─────────────────────────────────────────────────────────────
 // HANDLER
 // ─────────────────────────────────────────────────────────────
@@ -164,9 +133,11 @@ exports.handler = async (event) => {
       return { statusCode: 400, headers: CORS, body: JSON.stringify({ error: `Unknown role: ${selectedRole}` }) };
 
     // Read file from S3
-    const s3Res  = await s3.send(new GetObjectCommand({ Bucket: process.env.RESUME_BUCKET, Key: fileKey }));
-    const rawText = await streamToString(s3Res.Body);
+    const s3Res   = await s3.send(new GetObjectCommand({ Bucket: process.env.RESUME_BUCKET, Key: fileKey }));
+    const buffer  = await streamToBuffer(s3Res.Body);
+    const rawText = await extractTextFromBuffer(buffer, fileKey, s3Res.ContentType);
     const text    = normalise(rawText);
+    const extractedEmail = extractEmail(rawText);
 
     // Keyword matching
     const { found, missing } = matchKeywords(text, roleKeywords);
@@ -189,10 +160,20 @@ exports.handler = async (event) => {
         missing_keywords: { S: JSON.stringify(missing) },
         suggestions:      { S: JSON.stringify(suggestions) },
         tips:             { S: JSON.stringify(tips) },
+        extracted_email:  { S: extractedEmail || "" },
         file_key:         { S: fileKey },
         created_at:       { S: createdAt },
       },
     }));
+
+    console.log("analyzeResume summary:", {
+      fileKey,
+      selectedRole,
+      userId,
+      score,
+      totalKeywords: roleKeywords.length,
+      extractedEmail: extractedEmail || null,
+    });
 
     return {
       statusCode: 200,
@@ -202,6 +183,7 @@ exports.handler = async (event) => {
         score, totalKeywords: roleKeywords.length,
         foundKeywords: found, missingKeywords: missing,
         suggestions, tips, roleMatchPercent: score, createdAt,
+        extractedEmail: extractedEmail || null,
       }),
     };
   } catch (err) {

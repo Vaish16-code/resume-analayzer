@@ -16,7 +16,7 @@ export default function ResultPage() {
   if (!result) return null
 
   const { score, selectedRole, resumeName, foundKeywords, missingKeywords,
-          suggestions, tips, totalKeywords, analysisId, createdAt, isDemo } = result
+      suggestions, tips, totalKeywords, analysisId, createdAt, isDemo, extractedEmail } = result
   const { text: scoreText } = getScoreColor(score)
 
   async function handleDownload() {
@@ -50,6 +50,7 @@ export default function ResultPage() {
         <div>
           <h1 className="text-3xl font-bold text-slate-100">Analysis Result</h1>
           <p className="text-slate-400 mt-1 text-sm">{resumeName}  •  {selectedRole}  •  {formatDate(createdAt)}</p>
+          {extractedEmail && <p className="text-slate-500 mt-1 text-xs">Extracted email: {extractedEmail}</p>}
           {isDemo && <span className="badge badge-yellow mt-1">🚀 Demo Mode</span>}
         </div>
         <div className="flex gap-3 flex-wrap">

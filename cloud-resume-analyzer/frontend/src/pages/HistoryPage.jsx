@@ -99,6 +99,7 @@ export default function HistoryPage() {
                   <div className="flex-1 min-w-0">
                     <p className="font-semibold text-slate-100 truncate">{analysis.resumeName || "Untitled Resume"}</p>
                     <p className="text-sm text-slate-400 mt-0.5">{analysis.selectedRole}</p>
+                    {analysis.extractedEmail && <p className="text-xs text-slate-500 mt-1 truncate">{analysis.extractedEmail}</p>}
                     <p className="text-xs text-slate-500 mt-1">{formatDate(analysis.createdAt)}</p>
                   </div>
                   <div className="flex flex-col items-end gap-2">
