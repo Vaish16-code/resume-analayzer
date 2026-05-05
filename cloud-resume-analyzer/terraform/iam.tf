@@ -67,6 +67,12 @@ data "aws_iam_policy_document" "lambda_ses_send" {
   }
 }
 
+resource "aws_iam_role_policy" "lambda_data_access" {
+  name   = "cloud-ats-lambda-data-access"
+  role   = aws_iam_role.lambda_execution.id
+  policy = data.aws_iam_policy_document.lambda_data_access.json
+}
+
 resource "aws_iam_role_policy" "lambda_ses_send" {
   name   = "cloud-ats-lambda-ses-send"
   role   = aws_iam_role.lambda_execution.id
