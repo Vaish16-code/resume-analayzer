@@ -201,3 +201,26 @@ export async function downloadReport(analysisId) {
   if (!res.ok) throw new Error('Failed to generate report');
   return res.json();
 }
+
+export async function sendReportEmail(analysisId, email) {
+  if (IS_DEMO) {
+    // Demo mode: simulate sending email
+    await new Promise(r => setTimeout(r, 800));
+    return {
+      success: true,
+      message: `[DEMO] Report would be sent to: ${email}`,
+      email,
+      analysisId,
+    };
+  }
+  const res = await fetch(`${API_BASE}/send-report`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ analysisId, email }),
+  });
+  if (!res.ok) {
+    const err = await res.json();
+    throw new Error(err.error || 'Failed to send report');
+  }
+  return res.json();
+}

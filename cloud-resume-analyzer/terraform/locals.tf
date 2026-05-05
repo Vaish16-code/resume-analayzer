@@ -36,5 +36,11 @@ locals {
       description   = "Build a report and return a download URL"
       route_key     = "GET /report"
     }
+    sendReport = {
+      function_name = "cloud-ats-sendReport"
+      handler       = "sendReport.handler"
+      description   = "Send analysis report via email using SNS"
+      route_key     = "POST /send-report"
+    }
   }
 }

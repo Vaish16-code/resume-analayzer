@@ -2,7 +2,7 @@
 import { useLocation, useNavigate, Link } from "react-router-dom"
 import { toast } from "react-toastify"
 import ScoreRing from "../components/ScoreRing"
-import { downloadReport } from "../utils/api"
+import { downloadReport, sendReportEmail } from "../utils/api"
 import { getScoreColor, formatDate } from "../utils/helpers"
 
 export default function ResultPage() {
@@ -10,6 +10,8 @@ export default function ResultPage() {
   const navigate  = useNavigate()
   const result    = location.state?.result
   const [downloading, setDownloading] = useState(false)
+  const [sending, setSending] = useState(false)
+  const [userEmail, setUserEmail] = useState("")
   const [activeTab, setActiveTab]     = useState("overview")
 
   useEffect(() => { if (!result) navigate("/analyze") }, [result, navigate])
@@ -38,6 +40,25 @@ export default function ResultPage() {
       toast.error("Download failed. " + err.message)
     } finally {
       setDownloading(false)
+    }
+  }
+
+  async function handleSendEmail() {
+    const emailToSend = extractedEmail || userEmail
+    if (!emailToSend) {
+      toast.error("Please enter your email address")
+      return
+    }
+    try {
+      setSending(true)
+      const response = await sendReportEmail(analysisId, emailToSend)
+      toast.success(`Report sent to ${emailToSend}!`)
+      if (userEmail) setUserEmail("")
+      console.log("Email send response:", response)
+    } catch (err) {
+      toast.error("Failed to send email. " + err.message)
+    } finally {
+      setSending(false)
     }
   }
 
@@ -95,6 +116,41 @@ export default function ResultPage() {
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Email section */}
+      <div className="glass-card p-6 animate-slide-up delay-150 space-y-4">
+        <h3 className="section-title flex items-center gap-2">
+          <span>📧</span> Send Report via Email
+        </h3>
+        {extractedEmail && (
+          <div className="p-4 rounded-lg bg-green-500/10 border border-green-500/30">
+            <p className="text-sm text-slate-300 mb-2">Email extracted from resume:</p>
+            <p className="text-lg font-semibold text-green-400">{extractedEmail}</p>
+          </div>
+        )}
+        {!extractedEmail && (
+          <div className="space-y-3">
+            <p className="text-sm text-slate-400">No email found in resume. Please enter your email to receive the report:</p>
+            <input
+              type="email"
+              placeholder="your.email@example.com"
+              value={userEmail}
+              onChange={(e) => setUserEmail(e.target.value)}
+              className="w-full px-4 py-2 rounded-lg bg-dark-900 border border-white/20 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-primary-500 transition-colors"
+            />
+          </div>
+        )}
+        <button
+          onClick={handleSendEmail}
+          disabled={sending || (!extractedEmail && !userEmail)}
+          className="w-full btn-primary"
+        >
+          {sending ? "⏳ Sending…" : "📤 Send Report to Email"}
+        </button>
+        <p className="text-xs text-slate-500 text-center">
+          ℹ️ AWS SNS will send a confirmation link to your email. Click it to receive the report.
+        </p>
       </div>
 
       {/* Tabs */}

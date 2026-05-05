@@ -252,6 +252,54 @@ app.get("/report", (req, res) => {
   }
 });
 
+// ── POST /send-report ─────────────────────────────────────────
+app.post("/send-report", (req, res) => {
+  try {
+    const { analysisId, email } = req.body;
+
+    // Validate inputs
+    if (!analysisId || !email)
+      return res.status(400).json({ error: "analysisId and email are required." });
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email))
+      return res.status(400).json({ error: "Invalid email address." });
+
+    // Find the analysis
+    const analysis = localDB.find((a) => a.analysisId === analysisId);
+    if (!analysis)
+      return res.status(404).json({ error: "Analysis not found." });
+
+    const text = buildReportText(analysis);
+
+    // In local mode, simulate sending email by logging and saving
+    const emailLog = path.join(REPORTS_DIR, `${analysisId}_email_${email}.log`);
+    fs.writeFileSync(emailLog, [
+      `Email Report Sent`,
+      `═════════════════════════════`,
+      `To:       ${email}`,
+      `Resume:   ${analysis.resumeName}`,
+      `Role:     ${analysis.selectedRole}`,
+      `Score:    ${analysis.score}%`,
+      `Timestamp: ${new Date().toISOString()}`,
+      ``,
+      text,
+    ].join("\n"), "utf-8");
+
+    console.log(`[SEND-REPORT] Report sent to ${email} for analysis ${analysisId}`);
+
+    res.json({
+      success: true,
+      message: `Report sent to ${email}. (In local mode, check the reports folder for the email log.)`,
+      email,
+      analysisId,
+    });
+  } catch (err) {
+    console.error("send-report error:", err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // ── Health check ──────────────────────────────────────────────
 app.get("/health", (req, res) => {
   res.json({ status: "ok", mode: "local", totalRecords: localDB.length });
@@ -268,6 +316,7 @@ app.listen(PORT, () => {
   console.log("║  POST /analyze      — run ATS analysis            ║");
   console.log("║  GET  /history      — fetch analysis history      ║");
   console.log("║  GET  /report       — download report             ║");
+  console.log("║  POST /send-report  — send report via email       ║");
   console.log("║  GET  /health       — health check                ║");
   console.log("╚════════════════════════════════════════════════════╝");
   console.log("");
