@@ -59,3 +59,9 @@ variable "tags" {
   type        = map(string)
   default     = {}
 }
+
+variable "sender_email" {
+  description = "Verified SES sender email address for sending reports."
+  type        = string
+  default     = "noreply@cloud-ats.example.com"
+}

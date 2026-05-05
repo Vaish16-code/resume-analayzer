@@ -22,7 +22,7 @@ resource "aws_lambda_function" "functions" {
     variables = {
       RESUME_BUCKET  = aws_s3_bucket.resumes.bucket
       DYNAMODB_TABLE = aws_dynamodb_table.resume_analysis.name
-      SNS_TOPIC_ARN  = aws_sns_topic.report_notifications.arn
+      SENDER_EMAIL   = var.sender_email
     }
   }
 

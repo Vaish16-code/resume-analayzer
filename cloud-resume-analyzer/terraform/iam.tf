@@ -54,28 +54,21 @@ data "aws_iam_policy_document" "lambda_data_access" {
   }
 }
 
-data "aws_iam_policy_document" "lambda_sns_publish" {
+data "aws_iam_policy_document" "lambda_ses_send" {
   statement {
     effect = "Allow"
 
     actions = [
-      "sns:Publish",
+      "ses:SendEmail",
+      "ses:SendRawEmail",
     ]
 
-    resources = [
-      aws_sns_topic.report_notifications.arn,
-    ]
+    resources = ["*"]
   }
 }
 
-resource "aws_iam_role_policy" "lambda_data_access" {
-  name   = "cloud-ats-lambda-data-access"
+resource "aws_iam_role_policy" "lambda_ses_send" {
+  name   = "cloud-ats-lambda-ses-send"
   role   = aws_iam_role.lambda_execution.id
-  policy = data.aws_iam_policy_document.lambda_data_access.json
-}
-
-resource "aws_iam_role_policy" "lambda_sns_publish" {
-  name   = "cloud-ats-lambda-sns-publish"
-  role   = aws_iam_role.lambda_execution.id
-  policy = data.aws_iam_policy_document.lambda_sns_publish.json
+  policy = data.aws_iam_policy_document.lambda_ses_send.json
 }

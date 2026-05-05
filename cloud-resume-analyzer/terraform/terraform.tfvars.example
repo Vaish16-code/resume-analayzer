@@ -6,3 +6,4 @@ dynamodb_table_name  = "resume_analysis"
 lambda_timeout       = 30
 lambda_memory_size   = 256
 log_retention_days   = 14
+sender_email         = "your-verified-ses-email@example.com"

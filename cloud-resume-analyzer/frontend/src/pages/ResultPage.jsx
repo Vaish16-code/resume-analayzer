@@ -149,7 +149,7 @@ export default function ResultPage() {
           {sending ? "⏳ Sending…" : "📤 Send Report to Email"}
         </button>
         <p className="text-xs text-slate-500 text-center">
-          ℹ️ AWS SNS will send a confirmation link to your email. Click it to receive the report.
+          ✅ Report will be sent directly to your email via AWS SES.
         </p>
       </div>
 

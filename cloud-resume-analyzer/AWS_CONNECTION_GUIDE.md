@@ -171,7 +171,7 @@ Invoke-RestMethod -Method Post `
 3. The frontend calls `POST /analyze` with the returned `fileKey` and selected role.
 4. The Lambda reads the resume from S3, scores it, and stores the result in DynamoDB.
 5. `GET /history` reads the saved analyses for the current `userId`.
-6. `GET /report` creates a text report, stores it in S3, returns a pre-signed download URL, and publishes the report to SNS when an email was extracted from the resume.
+6. `POST /send-report` sends the analysis report directly to the provided email via AWS SES (no confirmation needed).
 
 ## Troubleshooting
 
@@ -181,7 +181,7 @@ Invoke-RestMethod -Method Post `
 | `CORS` errors | Re-run `terraform apply` and confirm the HTTP API CORS settings are intact. |
 | Upload returns `403` | Check the Lambda IAM policy and the resume bucket name in `terraform.tfvars`. |
 | History is empty | Make sure the same browser user is being used and that `userId` matches the saved localStorage value. |
-| `Report download fails` | Confirm DynamoDB, S3, and SNS permissions are attached to the Lambda role. |
+| `Report email not received` | Verify that `sender_email` in `terraform.tfvars` is a verified SES sender address. |
 | `Terraform zip build is empty` | Run `npm install` in `backend/lambdas/` again before `terraform apply`. |
 
 ## Notes
@@ -189,5 +189,5 @@ Invoke-RestMethod -Method Post `
 - The API Gateway URL from Terraform is the value you should use for `VITE_API_URL`.
 - The frontend S3 website URL is HTTP-based; if you need HTTPS later, add CloudFront on top.
 - CloudWatch logs are available under `/aws/lambda/cloud-ats-*` in the `ap-south-1` region.
-- SNS report delivery uses the `cloud-ats-report-notifications` topic; the extracted email is included in the report, and email delivery requires the subscriber to confirm the SNS subscription once.
+- Email delivery uses AWS SES. The sender email must be verified in the SES console. Set it via `sender_email` in `terraform.tfvars`.
 - `terraform.tfvars` should not be committed.

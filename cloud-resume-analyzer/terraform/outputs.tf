@@ -28,7 +28,7 @@ output "lambda_role_arn" {
   value       = aws_iam_role.lambda_execution.arn
 }
 
-output "sns_topic_arn" {
-  description = "SNS topic used for report notifications."
-  value       = aws_sns_topic.report_notifications.arn
+output "sender_email" {
+  description = "Verified SES sender email used for sending reports."
+  value       = var.sender_email
 }

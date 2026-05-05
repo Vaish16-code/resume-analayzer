@@ -1,5 +1,2 @@
-resource "aws_sns_topic" "report_notifications" {
-  name = "cloud-ats-report-notifications"
-
-  tags = local.common_tags
-}
+# SNS resources have been removed.
+# Email delivery is now handled directly via AWS SES (Simple Email Service).
